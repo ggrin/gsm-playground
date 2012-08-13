@@ -89,6 +89,17 @@ namespace HTTP {
     gsm.DumpBuffer();
   }
 
+  void post_data(char* data) {
+    at_command("HTTPDATA=%d,%d", strlen(data), 1000);
+    gsm.WaitResp(500, 50);
+    gsm.SendData(data);
+    gsm.SendData("\x1a");
+    delay(200);
+    gsm.DumpBuffer();
+  }
+
+
+
   /**
    ** public
    **/
@@ -119,5 +130,21 @@ namespace HTTP {
     AT_HTTP("ACTION", 1);
     gsm.DumpBuffer();
   }
-
+  
+  int post_tempValues( char* url, float** tempValues){
+    PrepareRequest(url);
+    char value[7];
+    post_data("{[");
+    for(int i=0;i<60;i++) {
+      post_data("[");
+      for(int j=0;j<sensorsFound;j++) {
+	snprintf(value, 6, "%.2f,", tempValues[i][j]);
+	post_data(value);
+      }
+      post_data("]");
+    }
+    post_data("]}");
+    AT_HTTP("ACTION", 1);
+    gsm.DumpBuffer();
+  }
 };

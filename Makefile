@@ -1,4 +1,4 @@
-INO=/usr/local/bin/ino
+INO=ino
 MODEL=atmega328
 #MODEL=mega
 SERIAL_PORT=/dev/ttyUSB0
